@@ -15,7 +15,8 @@ namespace CompetitorDetails.Selenium
         {
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
             // Create a temporary directory for the user data directory
-            string tempUserDataDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            string tempUserDataDir = Path.Combine("/tmp", Guid.NewGuid().ToString());
+            //string tempUserDataDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             // Initialize ChromeDriver
             var options = new ChromeOptions();
             options.AddArgument("--headless"); // Optional: Run Chrome in headless mode

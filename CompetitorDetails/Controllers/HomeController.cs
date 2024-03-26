@@ -23,7 +23,10 @@ namespace CompetitorDetails.Controllers
         {
             List<ArticleDetail>? articleDetailList = competitorArticle.TestGoogleSearch(searchTerm);
 
-            List<ArticleDetail>? todayData = articleDetailList?.Where(d => d.ArticleTime.Contains("h")).ToList();
+            List<ArticleDetail>? todayData = articleDetailList?
+                .Where(d => d.ArticleTime.Contains("h"))
+                .DistinctBy(a => a.ArticleTitle)
+                .ToList();
             return PartialView("_ArticleDetail", todayData);
         }
         public IActionResult Privacy()
