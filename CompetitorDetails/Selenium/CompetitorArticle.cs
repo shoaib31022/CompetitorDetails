@@ -58,13 +58,13 @@ namespace CompetitorDetails.Selenium
             options.AddArgument("--lang=en-US");
 
             // Set path to the chromedriver executable
-            var chromedriverPath = "/usr/local/bin/chromedriver";
+            //var chromedriverPath = "/usr/local/bin/chromedriver";
 
             // Set up Selenium WebDriver with Chrome
             //ChromeDriverService service = ChromeDriverService.CreateDefaultService();
 
             // Initialize a Chrome WebDriver
-            using (var driver = new ChromeDriver(chromedriverPath,options))
+            using (var driver = new ChromeDriver(options))
             {
                 // Navigate to the specified URL
                 driver.Navigate().GoToUrl(url);
