@@ -10,9 +10,9 @@ namespace CompetitorDetails.Selenium
 {
     public class CompetitorArticle
     {
-        [Test]
         public List<ArticleDetail> TestGoogleSearch(string url)
         {
+            Console.WriteLine(url);
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
             // Create a temporary directory for the user data directory
             string tempUserDataDir = Path.Combine("/tmp", Guid.NewGuid().ToString());
@@ -66,7 +66,7 @@ namespace CompetitorDetails.Selenium
             {
                 // Navigate to the specified URL
                 driver.Navigate().GoToUrl(url);
-
+                Console.WriteLine("starting browser");
                 // Create a FluentWait instance
                 FluentWait wait = new FluentWait(driver)
                 .WithTimeout(TimeSpan.FromSeconds(30)) // Set timeout
