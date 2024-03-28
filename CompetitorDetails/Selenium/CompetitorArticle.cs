@@ -5,6 +5,7 @@ using OpenQA.Selenium;
 using System;
 using CompetitorDetails.Data.Wait.FluentW;
 using CompetitorDetails.Models;
+using OpenQA.Selenium.Remote;
 
 namespace CompetitorDetails.Selenium
 {
@@ -15,23 +16,26 @@ namespace CompetitorDetails.Selenium
             url = "www.google.com";
             Console.WriteLine(url);
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
-
+            // Initialize ChromeDriver
             var options = new ChromeOptions();
-            options.AddArgument("--headless");
-            options.AddArgument("--whitelisted-ips");
-            options.AddArgument("--no-sandbox");
-            options.AddArgument("--disable-extensions");
-            options.AddArgument("--disable-dev-shm-usage");
-            // Set up Selenium WebDriver with Chrome
-            //ChromeDriverService service = ChromeDriverService.CreateDefaultService();
+            // Specify the hub URL
+            var hubUrl = "http://localhost:4444/wd/hub";
+
+
             // Initialize a Chrome WebDriver
-            using (var driver = new ChromeDriver(options))
+            using (var driver = new RemoteWebDriver(new Uri(hubUrl), options))
             {
                 try
                 {
                     // Navigate to the specified URL
                     driver.Navigate().GoToUrl(url);
                     Console.WriteLine("starting browser");
+                    var article = new ArticleDetail()
+                    {
+                        ArticleTime = "2h",
+                        ArticleTitle = driver.Title,
+                    };
+                    articleDetails.Add(article);
                 }
                 catch (Exception ex)
                 {
@@ -40,14 +44,6 @@ namespace CompetitorDetails.Selenium
                 }
                 finally { driver.Close(); }
             }
-
-
-                var article = new ArticleDetail()
-            {
-                ArticleTime = "2h",
-                ArticleTitle = "this is google testing",
-            };
-            articleDetails.Add(article);
             return articleDetails;
         }
         public List<ArticleDetail> TestGoogleSearch1(string url)
