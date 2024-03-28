@@ -19,7 +19,7 @@ namespace CompetitorDetails.Selenium
             // Initialize ChromeDriver
             var options = new ChromeOptions();
             // Specify the hub URL
-            var hubUrl = "http://localhost:4444/wd/hub";
+            var hubUrl = "http://selenium-hub:4444/wd/hub";
 
 
             // Initialize a Chrome WebDriver
