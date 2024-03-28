@@ -12,6 +12,34 @@ namespace CompetitorDetails.Selenium
     {
         public List<ArticleDetail> TestGoogleSearch(string url)
         {
+            url = "www.google.com";
+            Console.WriteLine(url);
+            List<ArticleDetail> articleDetails = new List<ArticleDetail>();
+
+            var options = new ChromeOptions();
+            options.AddArgument("--headless");
+
+            // Set up Selenium WebDriver with Chrome
+            ChromeDriverService service = ChromeDriverService.CreateDefaultService();
+            // Initialize a Chrome WebDriver
+            using (var driver = new ChromeDriver(service, options))
+            {
+                // Navigate to the specified URL
+                driver.Navigate().GoToUrl(url);
+                Console.WriteLine("starting browser");
+            }
+
+
+                var article = new ArticleDetail()
+            {
+                ArticleTime = "2h",
+                ArticleTitle = "this is google testing",
+            };
+            articleDetails.Add(article);
+            return articleDetails;
+        }
+        public List<ArticleDetail> TestGoogleSearch1(string url)
+        {
             Console.WriteLine(url);
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
             // Create a temporary directory for the user data directory
