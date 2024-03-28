@@ -27,9 +27,10 @@ namespace CompetitorDetails.Selenium
             {
                 try
                 {
+                    Console.WriteLine("starting browser");
                     // Navigate to the specified URL
                     driver.Navigate().GoToUrl(url);
-                    Console.WriteLine("starting browser");
+                    
                     var article = new ArticleDetail()
                     {
                         ArticleTime = "2h",
