@@ -17,9 +17,10 @@ namespace CompetitorDetails.Selenium
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
 
             var options = new ChromeOptions();
-            options.AddArguments("--no-sandbox", "--headless", "--window-size=1024x768");
-            //options.AddArgument("--headless");
-            //options.AddArgument("--disable-dev-shm-usage");
+            options.AddArgument("--headless");
+            options.AddArgument("--whitelisted-ips");
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-extensions");
             // Set up Selenium WebDriver with Chrome
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
             // Initialize a Chrome WebDriver
