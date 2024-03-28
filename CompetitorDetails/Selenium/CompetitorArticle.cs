@@ -234,10 +234,9 @@ namespace CompetitorDetails.Selenium
                     return articleDetails;
 
                 }
-                catch (NoSuchElementException)
+                catch (NoSuchElementException ex)
                 {
-
-                    throw;
+                    Console.WriteLine(ex.Message);
                 }
                 finally
                 {
@@ -252,7 +251,7 @@ namespace CompetitorDetails.Selenium
                     }
                 }
             }
-            //return articleDetails;
+            return articleDetails;
         }
 
         static long GetPageHeight(IWebDriver driver)
