@@ -17,13 +17,19 @@ namespace CompetitorDetails.Selenium
             Console.WriteLine(url);
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
             // Initialize ChromeDriver
-            var options = new ChromeOptions();
+            var browserOptions = new ChromeOptions();
+            browserOptions.PlatformName = "Windows 10";
+            browserOptions.BrowserVersion = "latest";
+            browserOptions.AddArgument("--headless");
+            var cloudOptions = new Dictionary<string, object>();
+            browserOptions.AddAdditionalOption("cloud:options", cloudOptions);
+
             // Specify the hub URL
             var hubUrl = "http://selenium-hub:4444/wd/hub";
 
 
             // Initialize a Chrome WebDriver
-            using (var driver = new RemoteWebDriver(new Uri(hubUrl), options))
+            using (var driver = new RemoteWebDriver(new Uri(hubUrl), browserOptions))
             {
                 try
                 {
