@@ -22,9 +22,9 @@ namespace CompetitorDetails.Selenium
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-extensions");
             // Set up Selenium WebDriver with Chrome
-            ChromeDriverService service = ChromeDriverService.CreateDefaultService();
+            //ChromeDriverService service = ChromeDriverService.CreateDefaultService();
             // Initialize a Chrome WebDriver
-            using (var driver = new ChromeDriver(service, options))
+            using (var driver = new ChromeDriver(options))
             {
                 try
                 {
