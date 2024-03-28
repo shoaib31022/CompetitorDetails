@@ -61,10 +61,10 @@ namespace CompetitorDetails.Selenium
             //var chromedriverPath = "/usr/local/bin/chromedriver";
 
             // Set up Selenium WebDriver with Chrome
-            //ChromeDriverService service = ChromeDriverService.CreateDefaultService();
+            ChromeDriverService service = ChromeDriverService.CreateDefaultService();
 
             // Initialize a Chrome WebDriver
-            using (var driver = new ChromeDriver(options))
+            using (var driver = new ChromeDriver(service,options))
             {
                 // Navigate to the specified URL
                 driver.Navigate().GoToUrl(url);
