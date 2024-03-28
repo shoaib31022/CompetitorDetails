@@ -21,6 +21,7 @@ namespace CompetitorDetails.Selenium
             options.AddArgument("--whitelisted-ips");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-extensions");
+            options.AddArgument("--disable-dev-shm-usage");
             // Set up Selenium WebDriver with Chrome
             //ChromeDriverService service = ChromeDriverService.CreateDefaultService();
             // Initialize a Chrome WebDriver
