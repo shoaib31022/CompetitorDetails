@@ -12,7 +12,7 @@ namespace CompetitorDetails.Selenium
 {
     public class CompetitorArticle
     {
-        public List<ArticleDetail> TestGoogleSearch(string url)
+        public List<ArticleDetail> TestGoogleSearch1(string url)
         {
             // Create a temporary directory for the user data directory
             string tempUserDataDir = Path.Combine("/tmp", Guid.NewGuid().ToString());
@@ -78,8 +78,10 @@ namespace CompetitorDetails.Selenium
             }
             return articleDetails;
         }
-        public List<ArticleDetail> TestGoogleSearch1(string url)
+        public List<ArticleDetail> TestGoogleSearch(string url)
         {
+            // Specify the hub URL
+            var hubUrl = "http://selenium-hub:4444/wd/hub";
             Console.WriteLine(url);
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
             // Create a temporary directory for the user data directory
@@ -87,6 +89,10 @@ namespace CompetitorDetails.Selenium
             //string tempUserDataDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             // Initialize ChromeDriver
             var options = new ChromeOptions();
+
+            var cloudOptions = new Dictionary<string, object>();
+            options.AddAdditionalOption("cloud:options", cloudOptions);
+
             options.AddArgument("--headless"); // Optional: Run Chrome in headless mode
                                                // Set user data directory to a temporary directory
             options.AddArgument($"--user-data-dir={tempUserDataDir}");
@@ -125,14 +131,8 @@ namespace CompetitorDetails.Selenium
             // Set a specific language for the browser (e.g., English)
             options.AddArgument("--lang=en-US");
 
-            // Set path to the chromedriver executable
-            //var chromedriverPath = "/usr/local/bin/chromedriver";
-
-            // Set up Selenium WebDriver with Chrome
-            ChromeDriverService service = ChromeDriverService.CreateDefaultService();
-
             // Initialize a Chrome WebDriver
-            using (var driver = new ChromeDriver(service,options))
+            using (var driver = new RemoteWebDriver(new Uri(hubUrl), options))
             {
                 // Navigate to the specified URL
                 driver.Navigate().GoToUrl(url);
@@ -241,9 +241,15 @@ namespace CompetitorDetails.Selenium
                 }
                 finally
                 {
-                    driver.Quit();
-                    // Clean up temporary directory
-                    Directory.Delete(tempUserDataDir, true);
+                    if (driver != null)
+                    {
+                        driver.Quit();
+                        // Clean up temporary directory
+                        if (File.Exists(tempUserDataDir))
+                        {
+                            Directory.Delete(tempUserDataDir, true);
+                        }
+                    }
                 }
             }
             //return articleDetails;
