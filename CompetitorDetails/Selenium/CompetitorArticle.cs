@@ -69,7 +69,10 @@ namespace CompetitorDetails.Selenium
                     {
                         driver.Quit();
                         // Clean up temporary directory
-                        Directory.Delete(tempUserDataDir, true);
+                        if (File.Exists(tempUserDataDir))
+                        {
+                            Directory.Delete(tempUserDataDir, true);
+                        }
                     }
                 }
             }
