@@ -63,7 +63,15 @@ namespace CompetitorDetails.Selenium
                     Console.WriteLine(ex.Message);
                     throw;
                 }
-                finally { driver.Close(); }
+                finally 
+                {
+                    if (driver != null)
+                    {
+                        driver.Quit();
+                        // Clean up temporary directory
+                        Directory.Delete(tempUserDataDir, true);
+                    }
+                }
             }
             return articleDetails;
         }
