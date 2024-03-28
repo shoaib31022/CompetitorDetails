@@ -18,8 +18,7 @@ namespace CompetitorDetails.Selenium
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
             // Initialize ChromeDriver
             var browserOptions = new ChromeOptions();
-            browserOptions.BrowserVersion = "latest";
-            browserOptions.AddArgument("--headless");
+
             var cloudOptions = new Dictionary<string, object>();
             browserOptions.AddAdditionalOption("cloud:options", cloudOptions);
 
