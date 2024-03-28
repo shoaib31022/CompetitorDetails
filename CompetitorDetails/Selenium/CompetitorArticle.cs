@@ -17,16 +17,26 @@ namespace CompetitorDetails.Selenium
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
 
             var options = new ChromeOptions();
-            options.AddArgument("--headless");
-            options.AddArgument("--disable-dev-shm-usage");
+            options.AddArguments("--no-sandbox", "--headless", "--window-size=1024x768");
+            //options.AddArgument("--headless");
+            //options.AddArgument("--disable-dev-shm-usage");
             // Set up Selenium WebDriver with Chrome
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
             // Initialize a Chrome WebDriver
             using (var driver = new ChromeDriver(service, options))
             {
-                // Navigate to the specified URL
-                driver.Navigate().GoToUrl(url);
-                Console.WriteLine("starting browser");
+                try
+                {
+                    // Navigate to the specified URL
+                    driver.Navigate().GoToUrl(url);
+                    Console.WriteLine("starting browser");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    throw;
+                }
+                finally { driver.Close(); }
             }
 
 
