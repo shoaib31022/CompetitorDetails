@@ -6,6 +6,7 @@ using System;
 using CompetitorDetails.Data.Wait.FluentW;
 using CompetitorDetails.Models;
 using OpenQA.Selenium.Remote;
+using Microsoft.Extensions.Options;
 
 namespace CompetitorDetails.Selenium
 {
@@ -13,14 +14,29 @@ namespace CompetitorDetails.Selenium
     {
         public List<ArticleDetail> TestGoogleSearch(string url)
         {
+            // Create a temporary directory for the user data directory
+            string tempUserDataDir = Path.Combine("/tmp", Guid.NewGuid().ToString());
+
             url = "https://www.google.com/";
             Console.WriteLine(url);
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
             // Initialize ChromeDriver
             var browserOptions = new ChromeOptions();
 
+            
+
             var cloudOptions = new Dictionary<string, object>();
             browserOptions.AddAdditionalOption("cloud:options", cloudOptions);
+            browserOptions.AddArgument("--headless");
+            browserOptions.AddArgument($"--user-data-dir={tempUserDataDir}");
+            // Disable browser notifications
+            browserOptions.AddArgument("--disable-notifications");
+
+            // Disable browser extensions
+            browserOptions.AddArgument("--disable-extensions");
+
+            // Disable image loading to speed up browsing
+            browserOptions.AddArgument("--blink-settings=imagesEnabled=false");
 
             // Specify the hub URL
             var hubUrl = "http://selenium-hub:4444/wd/hub";
