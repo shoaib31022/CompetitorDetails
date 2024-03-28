@@ -13,7 +13,7 @@ namespace CompetitorDetails.Selenium
     {
         public List<ArticleDetail> TestGoogleSearch(string url)
         {
-            url = "www.google.com";
+            url = "https://www.google.com/";
             Console.WriteLine(url);
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
             // Initialize ChromeDriver
