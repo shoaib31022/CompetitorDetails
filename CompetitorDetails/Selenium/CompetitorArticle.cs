@@ -18,7 +18,7 @@ namespace CompetitorDetails.Selenium
 
             var options = new ChromeOptions();
             options.AddArgument("--headless");
-
+            options.AddArgument("--disable-dev-shm-usage");
             // Set up Selenium WebDriver with Chrome
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
             // Initialize a Chrome WebDriver
