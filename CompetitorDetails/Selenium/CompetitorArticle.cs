@@ -12,7 +12,7 @@ namespace CompetitorDetails.Selenium
 {
     public class CompetitorArticle
     {
-        public List<ArticleDetail> TestGoogleSearch(string url)
+        public List<ArticleDetail> TestGoogleSearch1(string url)
         {
             // Create a temporary directory for the user data directory
             string tempUserDataDir = Path.Combine("/tmp", Guid.NewGuid().ToString());
@@ -28,7 +28,7 @@ namespace CompetitorDetails.Selenium
             var cloudOptions = new Dictionary<string, object>();
             browserOptions.AddAdditionalOption("cloud:options", cloudOptions);
             //browserOptions.AddArgument("--headless");
-            browserOptions.AddArgument($"--user-data-dir={tempUserDataDir}");
+            //browserOptions.AddArgument($"--user-data-dir={tempUserDataDir}");
             // Disable browser notifications
             browserOptions.AddArgument("--disable-notifications");
 
@@ -39,7 +39,8 @@ namespace CompetitorDetails.Selenium
             browserOptions.AddArgument("--blink-settings=imagesEnabled=false");
 
             // Specify the hub URL
-            var hubUrl = "http://selenium-hub:4444/wd/hub";
+            var hubUrl = "http://localhost:4444/ui/wd/hub";
+            //var hubUrl = "http://selenium-hub:4444/wd/hub";
 
 
             // Initialize a Chrome WebDriver
@@ -78,7 +79,7 @@ namespace CompetitorDetails.Selenium
             }
             return articleDetails;
         }
-        public List<ArticleDetail> TestGoogleSearch1(string url)
+        public List<ArticleDetail> TestGoogleSearch(string url)
         {
             // Specify the hub URL
             var hubUrl = "http://selenium-hub:4444/wd/hub";
@@ -93,7 +94,7 @@ namespace CompetitorDetails.Selenium
             var cloudOptions = new Dictionary<string, object>();
             options.AddAdditionalOption("cloud:options", cloudOptions);
 
-            options.AddArgument("--headless"); // Optional: Run Chrome in headless mode
+            //options.AddArgument("--headless"); // Optional: Run Chrome in headless mode
                                                // Set user data directory to a temporary directory
             options.AddArgument($"--user-data-dir={tempUserDataDir}");
 
@@ -147,7 +148,7 @@ namespace CompetitorDetails.Selenium
                     try
                     {
                         // Pause for a short while to allow content to load
-                        System.Threading.Thread.Sleep(2000); // Adjust as needed
+                        System.Threading.Thread.Sleep(5000); // Adjust as needed
                                                              // Attempt to find the desired element
                         IWebElement element = d.FindElement(By.XPath("/html/body/fluent-design-system-provider/channel-page"));
 
@@ -160,7 +161,7 @@ namespace CompetitorDetails.Selenium
                         return false;
                     }
                 });
-
+                Console.WriteLine("after wait");
                 System.Threading.Thread.Sleep(5000); // Adjust as needed
                                                      // Initialize JavaScript executor
                 IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
