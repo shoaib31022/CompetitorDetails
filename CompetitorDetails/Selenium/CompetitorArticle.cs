@@ -50,7 +50,7 @@ namespace CompetitorDetails.Selenium
                     Console.WriteLine("starting browser");
                     // Navigate to the specified URL
                     driver.Navigate().GoToUrl(url);
-                    
+                    System.Threading.Thread.Sleep(10000);
                     var article = new ArticleDetail()
                     {
                         ArticleTime = "2h",
