@@ -17,7 +17,7 @@ namespace CompetitorDetails.Selenium
             // Create a temporary directory for the user data directory
             string tempUserDataDir = Path.Combine("/tmp", Guid.NewGuid().ToString());
 
-            url = "https://www.google.com/";
+           // url = "https://www.google.com/";
             Console.WriteLine(url);
             List<ArticleDetail> articleDetails = new List<ArticleDetail>();
             // Initialize ChromeDriver
