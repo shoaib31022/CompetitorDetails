@@ -12,7 +12,7 @@ namespace CompetitorDetails.Selenium
 {
     public class CompetitorArticle
     {
-        public List<ArticleDetail> TestGoogleSearch1(string url)
+        public List<ArticleDetail> TestGoogleSearch(string url)
         {
             // Create a temporary directory for the user data directory
             string tempUserDataDir = Path.Combine("/tmp", Guid.NewGuid().ToString());
@@ -27,7 +27,7 @@ namespace CompetitorDetails.Selenium
 
             var cloudOptions = new Dictionary<string, object>();
             browserOptions.AddAdditionalOption("cloud:options", cloudOptions);
-            browserOptions.AddArgument("--headless");
+            //browserOptions.AddArgument("--headless");
             browserOptions.AddArgument($"--user-data-dir={tempUserDataDir}");
             // Disable browser notifications
             browserOptions.AddArgument("--disable-notifications");
@@ -78,7 +78,7 @@ namespace CompetitorDetails.Selenium
             }
             return articleDetails;
         }
-        public List<ArticleDetail> TestGoogleSearch(string url)
+        public List<ArticleDetail> TestGoogleSearch1(string url)
         {
             // Specify the hub URL
             var hubUrl = "http://selenium-hub:4444/wd/hub";
