@@ -12,12 +12,16 @@
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.23" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.23" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.23" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.23" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.23" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
     <PackageReference Include="NUnit" Version="4.1.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.3" />
     <PackageReference Include="Selenium.WebDriver" Version="4.18.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
 </Project>

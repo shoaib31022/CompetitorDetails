@@ -1,6 +1,8 @@
-﻿using CompetitorDetails.Models;
+﻿using CompetitorDetails.Data;
+using CompetitorDetails.Models;
 using CompetitorDetails.Selenium;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace CompetitorDetails.Controllers
@@ -10,20 +12,24 @@ namespace CompetitorDetails.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly CompetitorArticle competitorArticle = new CompetitorArticle();
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            string vsfssd = string.Empty;
+            List<ArticleDetail> articles = await _context.articles.ToListAsync();
+            SearchArticles(articles);
             return View();
         }
-        public IActionResult Search(string searchTerm)
+        private IActionResult SearchArticles(List<ArticleDetail> articleDetails)
         {
-            List<ArticleDetail>? articleDetailList = competitorArticle.TestGoogleSearch(searchTerm);
-
-            List<ArticleDetail>? todayData = articleDetailList?
+            List<ArticleDetail>? todayData = articleDetails?
                 .Where(d => d.ArticleTime.Contains("h"))
                 .DistinctBy(a => a.ArticleTitle)
                 .ToList();

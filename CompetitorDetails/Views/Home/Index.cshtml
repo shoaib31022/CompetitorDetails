@@ -3,52 +3,6 @@
     ViewData["Title"] = "Home Page";
 }
 
-<form class="input-group mb-3" id="searchForm">
-    <input type="text" class="form-control" id="searchTerm" name="searchTerm" placeholder="Search...">
-    <button type="submit" id="searchButton" class="btn btn-outline-secondary" >Search</button>
-</form>
-
-
-
-
-<div class="pt-5" id="loader" style="display: none;">
-<div class="spinner-border m-auto d-flex justify-content-center align-items-center">
-    <span class="sr-only"></span>
-</div>
-</div>
-
-<div id="searchResults" style="display: none;">
+<div id="searchResults">
     <partial name="_ArticleDetail" />
 </div>
-
-@section scripts {
-    <script>
-        $(function () {
-            $("#searchForm").submit(function (event) {
-                event.preventDefault(); // Prevent the form from submitting normally
-                var searchTerm = $("#searchTerm").val();
-                $("#searchTerm, #searchButton").prop("disabled", true);
-                $("#searchResults").hide();
-
-
-                $("#loader").show(); // Show loader while waiting for response
-
-                $.ajax({
-                    type: "GET",
-                    url: "/Home/Search",
-                    data: { searchTerm: searchTerm },
-                    success: function (data) {
-                        $("#loader").hide(); // Hide loader when response is received
-                        $("#searchResults").html(data); // Display search results
-                        $("#searchResults").show();
-                        $("#searchTerm, #searchButton").prop("disabled", false);
-                    },
-                    error: function () {
-                        $("#loader").hide(); // Hide loader on error
-                        alert("An error occurred while processing your request.");
-                    }
-                });
-            });
-        });
-    </script>
-}

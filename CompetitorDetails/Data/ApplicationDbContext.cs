@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using CompetitorDetails.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompetitorDetails.Data
@@ -9,5 +10,7 @@ namespace CompetitorDetails.Data
             : base(options)
         {
         }
+
+        public DbSet<ArticleDetail>? articles { get; set; }
     }
 }

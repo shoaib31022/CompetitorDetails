@@ -1,6 +1,6 @@
 ﻿@model List<ArticleDetail>
 
-<h3>Search Results</h3>
+<h3>Wealth of Geeks</h3>
 
 @if (Model != null && Model.Count > 0)
 {
@@ -15,8 +15,8 @@
             @foreach (var item in Model)
             {
             <tr>
-               
-                    <td>@item.ArticleTitle</td>
+
+                    <td><a target="_blank" href=@item.ArticleUrl>@item.ArticleTitle</a></td>
                     <td>@item.ArticleTime</td>
                
             </tr>
