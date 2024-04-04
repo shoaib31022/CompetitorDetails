@@ -1,8 +1,10 @@
 ﻿using CompetitorDetails.Data;
 using CompetitorDetails.Models;
 using CompetitorDetails.Selenium;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Diagnostics;
 
 namespace CompetitorDetails.Controllers
@@ -19,21 +21,37 @@ namespace CompetitorDetails.Controllers
             _logger = logger;
             _context = context;
         }
-
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            string vsfssd = string.Empty;
-            List<ArticleDetail> articles = await _context.articles.ToListAsync();
-            SearchArticles(articles);
             return View();
         }
-        private IActionResult SearchArticles(List<ArticleDetail> articleDetails)
+        public async Task<IActionResult> GetArticleData()
         {
-            List<ArticleDetail>? todayData = articleDetails?
-                .Where(d => d.ArticleTime.Contains("h"))
-                .DistinctBy(a => a.ArticleTitle)
-                .ToList();
-            return PartialView("_ArticleDetail", todayData);
+            List<ArticleDetail> articleslist = new List<ArticleDetail>();
+            List<ArticleDetail>? articles = await _context.articles.ToListAsync();
+            if (articles.Count > 0)
+            {
+                articleslist = SearchArticles(articles);
+            }
+            return Json(articleslist);
+        }
+
+        private List<ArticleDetail> SearchArticles(List<ArticleDetail> articleDetails)
+        {
+            var articles = articleDetails.Select(article =>
+            {
+                var timeDifference = DateTime.Now - DateTime.Parse(article.ArticleTime);
+                string times = GetTimeElapsedString(timeDifference);
+                return new ArticleDetail
+                {
+                    ArticleTitle = article.ArticleTitle,
+                    ArticleUrl = article.ArticleUrl,
+                    ArticleTime = times,
+                };
+
+            }).ToList();
+            return articles;
+            //return PartialView("_ArticleDetail", articles);
         }
         public IActionResult Privacy()
         {
@@ -44,6 +62,44 @@ namespace CompetitorDetails.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        // Function to convert TimeSpan to human-readable string
+        static string GetTimeElapsedString(TimeSpan timeSpan)
+        {
+            if (timeSpan.TotalDays >= 365)
+            {
+                int years = (int)(timeSpan.TotalDays / 365);
+                return years == 1 ? "1 year ago" : years + " years ago";
+            }
+            else if (timeSpan.TotalDays >= 30)
+            {
+                int months = (int)(timeSpan.TotalDays / 30);
+                return months == 1 ? "1 month ago" : months + " months ago";
+            }
+            else if (timeSpan.TotalDays >= 7)
+            {
+                int weeks = (int)(timeSpan.TotalDays / 7);
+                return weeks == 1 ? "1 week ago" : weeks + " weeks ago";
+            }
+            else if (timeSpan.TotalDays >= 1)
+            {
+                int days = (int)timeSpan.TotalDays;
+                return days == 1 ? "1 day ago" : days + " days ago";
+            }
+            else if (timeSpan.TotalHours >= 1)
+            {
+                int hours = (int)timeSpan.TotalHours;
+                return hours == 1 ? "1 hour ago" : hours + " hours ago";
+            }
+            else if (timeSpan.TotalMinutes >= 1)
+            {
+                int minutes = (int)timeSpan.TotalMinutes;
+                return minutes == 1 ? "1 minute ago" : minutes + " minutes ago";
+            }
+            else
+            {
+                return "Just now";
+            }
         }
     }
 }

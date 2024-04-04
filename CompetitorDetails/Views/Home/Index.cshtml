@@ -3,6 +3,85 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div id="searchResults">
+@* <div id="searchResults">
     <partial name="_ArticleDetail" />
-</div>
+</div> *@
+
+<h3>Wealth of Geeks</h3>
+<table id="articleTable" class="display">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var article in Model)
+            {
+                await Html.RenderPartialAsync("_ArticleDetail", article);
+            }
+        }
+        @* @* <partial name="_ArticleDetail" /> <!-- Render the PartialView --> *@ 
+    </tbody>
+</table>
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            // Define custom sorting function for time column
+            jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+                "custom-time-sort-pre": function (a) {
+                    var timeMap = {
+                        "hour": 1,
+                        "hours": 1,
+                        "day": 24,
+                        "days": 24,
+                        "week": 24 * 7,
+                        "weeks": 24 * 7
+                        // Add more if needed
+                    };
+
+                    var matches = a.match(/\d+\s+(\w+)\s+ago/);
+                    if (matches) {
+                        var unit = matches[1].toLowerCase();
+                        // Prioritize sorting based on hours first, then days, and finally weeks
+                        return (timeMap[unit] || 1) * parseInt(a);
+                    } else {
+                        return 0;
+                    }
+                },
+                "custom-time-sort-asc": function (a, b) {
+                    return a - b;
+                },
+                "custom-time-sort-desc": function (a, b) {
+                    return b - a;
+                }
+            });
+
+
+            $('#articleTable').DataTable({
+                ajax: { url: "/home/GetArticleData", dataSrc: "" },
+                columns: [
+                    {
+                        data: "articleTitle",
+                        render: function (data, type, row, meta) {
+                            // 'type' parameter helps you determine if DataTables is rendering for display or sorting etc.
+                            // You might want to conditionally render differently based on the 'type',
+                            // but for simplicity, let's assume we want the same behavior for all types.
+
+                            // 'row' parameter provides access to the entire data object for the current row
+                            // You can access other properties like 'articleUrl' from 'row'
+
+                            // Construct the hyperlink using the articleUrl and articleTitle
+                            return '<a href="' + row.articleUrl + '"target="_blank">' + data + '</a>';
+                        }
+                    },
+                    { data: "articleTime"}
+                ]
+            });
+        });
+    </script>
+}
