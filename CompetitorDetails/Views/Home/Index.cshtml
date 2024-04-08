@@ -1,4 +1,4 @@
-﻿@model List<ArticleDetail>
+﻿@model List<ArticleViewModel>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -19,6 +19,7 @@
 <table id="articleTable" class="display">
     <thead>
         <tr>
+            <th>Brand</th>
             <th>Title</th>
             <th>Time</th>
         </tr>
@@ -42,6 +43,9 @@
             var table = $('#articleTable').DataTable({
                 ajax: { url: "/home/GetArticleData", dataSrc: "" },
                 columns: [
+                    {
+                        data:"brandName",
+                    },
                     {
                         data: "articleTitle",
                         render: function (data, type, row, meta) {
@@ -78,7 +82,8 @@
                             }
                         }
                     }
-                ]
+                ],
+                columnDefs: [{ width: '15%', targets: 0 }, { width: '10%', targets: 2 }]
             });
 
             // Declare the 'table' variable outside the click event handler
@@ -93,7 +98,7 @@
                 var filterValue = $(this).data('filter');
                 if (filterValue === "today") {
                     // Filter by today's date
-                    table.column(1).search('Today').draw();
+                    table.column(2).search('Today').draw();
                 } 
                 else if (filterValue === "week") {
                     // Filter by articles published within the last 7 days

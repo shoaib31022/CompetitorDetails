@@ -27,11 +27,23 @@ namespace CompetitorDetails.Controllers
         }
         public async Task<IActionResult> GetArticleData()
         {
-            List<ArticleDetail> articleslist = new List<ArticleDetail>();
-            List<ArticleDetail>? articles = await _context.articles.ToListAsync();
+            List<ArticleViewModel> articleslist = new List<ArticleViewModel>();
+            List<ArticleDetail>? articles = await _context.articles
+                .Include(c => c.Competitors)
+                .ToListAsync();
             if (articles.Count > 0)
             {
-                articleslist = SearchArticles(articles);
+                foreach (var item in articles)
+                {
+                    var article = new ArticleViewModel
+                    {
+                        ArticleTitle = item.ArticleTitle,
+                        ArticleTime = item.ArticleTime,
+                        ArticleUrl = item.ArticleUrl,
+                        BrandName = item.Competitors?.Name,
+                    };
+                    articleslist.Add(article);
+                }
             }
             return Json(articleslist);
         }
@@ -57,6 +69,54 @@ namespace CompetitorDetails.Controllers
         {
             return View();
         }
+        public IActionResult Competitors()
+        {
+            return View();
+        }
+        public async Task<IActionResult> GetCompetitorsData()
+        {
+            //List<Competitor> competitorlist = new List<Competitor>();
+            List<Competitor>? competitors = await _context.competitors.ToListAsync();
+            
+            return Json(competitors);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddCompetitor([FromBody] Competitor competitor)
+        {
+            bool alreadyCheck = _context.competitors.Any(u => u.Url == competitor.Url);
+            if (!alreadyCheck)
+            {
+                var newBrand = new Competitor
+                {
+                    Id = Guid.NewGuid(),
+                    Name = competitor.Name,
+                    Url = competitor.Url,
+                    Status = competitor.Status,
+                };
+                await _context.competitors.AddAsync(newBrand);
+                await _context.SaveChangesAsync();
+                return Json(new { message = "Success" });
+            }
+            // Handle form data here
+            // You can access the submitted data via the 'data' parameter
+            return Json(new { message = "Something Wrong please check try again" });
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeteleCompetitor(Guid competitorId)
+        {
+            var alreadyCheck = _context.competitors.FirstOrDefault(i => i.Id == competitorId);
+            if (alreadyCheck != null)
+            {
+                _context.competitors.Remove(alreadyCheck);
+                await _context.SaveChangesAsync();
+                return Json(new { message = "Success" });
+            }
+            // Handle form data here
+            // You can access the submitted data via the 'data' parameter
+            return Json(new { message = "Something Wrong please check try again" });
+        }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

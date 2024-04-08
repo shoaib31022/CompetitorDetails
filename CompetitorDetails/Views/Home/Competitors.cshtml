@@ -1,0 +1,152 @@
+﻿@{
+    ViewData["Title"] = "Competitor Urls Page";
+}
+
+<h3 class="text-center">Competitors</h3>
+<div>
+    <!-- Buttons for filtering -->
+    <button type="button" class="filter-btn align-middle d-flex btn btn-primary border-dark border-1" id="openModalBtn">Add Url</button>
+</div>
+
+<table id="competitorsTable" class="display">
+    <thead>
+        <tr>
+            <th>Name</th>
+            @* <th>Url</th> *@
+            @* <th>Action</th> *@
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var article in Model)
+            {
+                //await Html.RenderPartialAsync("_ArticleDetail", article);
+            }
+        }
+        @* @* <partial name="_ArticleDetail" /> <!-- Render the PartialView --> *@
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Competitor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form inside modal -->
+                <form id="myForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Brand Name</label>
+                        <input type="text" class="form-control" id="name" name="Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="url" class="form-label">Brand Url</label>
+                        <textarea class="form-control" id="url" name="Url" required> </textarea> 
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            var table = $('#competitorsTable');
+            // Open modal when button is clicked
+            $('#openModalBtn').click(function () {
+                $('#myModal').modal('show');
+            });
+
+            // Handle form submission
+            $('#myForm').submit(function (e) {
+                e.preventDefault(); // Prevent default form submission
+
+                // Create Competitor object
+                var competitor = {
+                    Name: $('#name').val(),
+                    Url: $('#url').val().trim()
+                };
+
+                // Send Competitor object as JSON
+                $.ajax({
+                    url: '/home/AddCompetitor', // Replace with your controller method URL
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(competitor),
+                    success: function (response) {
+                        // Handle success response
+                        console.log(response);
+                        // Close modal if needed
+                        $('#myModal').modal('hide');
+                        window.location.reload();
+
+                    },
+                    error: function (error) {
+                        // Handle error
+                        console.log(error);
+                        datatablefun();
+                    }
+                });
+            });
+            datatablefun();
+            function datatablefun() {
+                table.DataTable({
+                    ajax: { url: "/home/GetCompetitorsData", dataSrc: "" },
+                    columns: [
+                        {
+                            data: "name",
+                            render: function (data, type, row, meta) {
+                                // 'type' parameter helps you determine if DataTables is rendering for display or sorting etc.
+                                // You might want to conditionally render differently based on the 'type',
+                                // but for simplicity, let's assume we want the same behavior for all types.
+
+                                // 'row' parameter provides access to the entire data object for the current row
+                                // You can access other properties like 'articleUrl' from 'row'
+
+                                // Construct the hyperlink using the articleUrl and articleTitle
+                                return '<a href="' + row.url + '"target="_blank">' + data + '</a>';
+                            }
+                        },
+                        // {
+                        //     data: "status"
+                        // }
+                        // Define a custom column for the button
+                        // {
+                        //     data: null,
+                        //     render: function (data, type, row, meta) {
+                        //         return '<button class="ajax-button btn btn-danger" data-competitor-id="' + row.id + '">Delete</button>';
+                        //     }
+                        // }
+                    ]
+                });
+            };
+            // Add event listener for the button clicks
+            table.on('click', '.ajax-button', function () {
+                var competitorId = $(this).data('competitor-id');
+                console.log(competitorId);
+                // Make an AJAX call using the articleId
+                $.ajax({
+                    url: '/home/DeteleCompetitor',
+                    type: 'POST',
+                    data: { competitorId: competitorId },
+                    success: function (response) {
+                        window.location.reload();
+                        // Handle the AJAX response
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors
+                    }
+                });
+            });
+        });
+    </script>
+}
