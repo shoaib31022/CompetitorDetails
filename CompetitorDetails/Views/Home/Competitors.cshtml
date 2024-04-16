@@ -1,11 +1,11 @@
 ﻿@{
-    ViewData["Title"] = "Competitor Urls Page";
+    ViewData["Title"] = "Competitors URL Page";
 }
 
 <h3 class="text-center">Competitors</h3>
 <div>
     <!-- Buttons for filtering -->
-    <button type="button" class="filter-btn align-middle d-flex btn btn-primary border-dark border-1" id="openModalBtn">Add Url</button>
+    <button type="button" class="filter-btn align-middle d-flex btn btn-primary border-dark border-1" id="openModalBtn">Add URL</button>
 </div>
 
 <table id="competitorsTable" class="display">
@@ -34,9 +34,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add Competitor</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <!-- Form inside modal -->
@@ -101,6 +99,7 @@
             function datatablefun() {
                 table.DataTable({
                     ajax: { url: "/home/GetCompetitorsData", dataSrc: "" },
+                    paging: false,
                     columns: [
                         {
                             data: "name",

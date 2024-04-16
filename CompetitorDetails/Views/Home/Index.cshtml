@@ -1,22 +1,17 @@
-﻿@model List<ArticleViewModel>
+﻿@model CompetitorViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
-
-@* <div id="searchResults">
-    <partial name="_ArticleDetail" />
-</div> *@
-
-<h3 class="text-center">Table of Articles</h3>
-<div>
-    <!-- Buttons for filtering -->
-    <button class="filter-btn align-middle d-flex btn border-dark border-1" data-filter="today">Show Today Articles Posted</button>
-    @* <button class="filter-btn" data-filter="week">This Week</button>
-    <button class="filter-btn" data-filter="month">This Month</button> *@
-</div>
-
-
-<table id="articleTable" class="display">
+<form class="d-flex form-control gap-3 p-3 my-3" id="competitor">
+    <div class="w-100">
+        @* <label asp-for="Competitor.Name" class="control-label"></label> *@
+        <select asp-for="Competitor.Id" class="form-control" asp-items="ViewBag.BrandId" required>
+            <option value="">Select Brand Name</option> <!-- Optional selection -->
+        </select>
+    </div>
+    <button type="submit" class=" rounded-pill btn-primary fw-bold px-5 ">Find</button>
+</form>
+<table id="articleTable" class="display" style="display:none">
     <thead>
         <tr>
             <th>Brand</th>
@@ -27,90 +22,123 @@
     <tbody>
         @if (Model != null)
         {
-            @foreach (var article in Model)
+            @foreach (var article in Model.Articles)
             {
                 await Html.RenderPartialAsync("_ArticleDetail", article);
             }
         }
-        @* @* <partial name="_ArticleDetail" /> <!-- Render the PartialView --> *@ 
     </tbody>
 </table>
-
 @section scripts{
-
     <script>
         $(document).ready(function () {
-            var table = $('#articleTable').DataTable({
-                ajax: { url: "/home/GetArticleData", dataSrc: "" },
-                columns: [
-                    {
-                        data:"brandName",
-                    },
-                    {
-                        data: "articleTitle",
-                        render: function (data, type, row, meta) {
-                            // 'type' parameter helps you determine if DataTables is rendering for display or sorting etc.
-                            // You might want to conditionally render differently based on the 'type',
-                            // but for simplicity, let's assume we want the same behavior for all types.
-
-                            // 'row' parameter provides access to the entire data object for the current row
-                            // You can access other properties like 'articleUrl' from 'row'
-
-                            // Construct the hyperlink using the articleUrl and articleTitle
-                            return '<a href="' + row.articleUrl + '"target="_blank">' + data + '</a>';
-                        }
-                    },
-                    {
-                        data: "articleTime", render: function (data, type, row, meta) {
-                            // Convert the articleTime to a Date object
-                            var articleDate = new Date(data);
-
-                            // Get the current date
-                            var currentDate = new Date();
-
-                            // Calculate the difference in days
-                            var differenceInTime = currentDate.getTime() - articleDate.getTime();
-                            var differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
-
-                            // Return the appropriate label based on the difference in days
-                            if (differenceInDays === 0) {
-                                return "Today";
-                            } else if (differenceInDays === 1) {
-                                return "1 day ago";
-                            } else {
-                                return differenceInDays + " days ago";
-                            }
-                        }
-                    }
-                ],
-                columnDefs: [{ width: '15%', targets: 0 }, { width: '10%', targets: 2 }]
-            });
-
-            // Declare the 'table' variable outside the click event handler
             var table;
+            $("#competitor").submit(function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                var form = $(this); // Get the form element
+                var formData = form.serialize(); // Serialize form data
+                // Send an AJAX request
+                $.ajax({
+                    type: "POST",
+                    url: "/home/GetArticleData",
+                    data: formData,
+                    success: function (response) {
+                        $('#articleTable').show();
+                        // Handle the AJAX response
+                        if (response && response.length > 0) {
+                            // Optionally, perform any actions upon successful form submission
+                            console.log("Articles received:", response);
+                            // Clear existing DataTable instance
+                            if (table) {
+                                table.clear().destroy();
+                            }
+                            // Initialize DataTables with the received data
+                            table = $('#articleTable').DataTable({
+                                data: response,
+                                paging: false,
+                                columns: [
+                                    {
+                                        data: "brandName",
+                                    },
+                                    {
+                                        data: "articleTitle",
+                                        render: function (data, type, row, meta) {
+                                            // 'type' parameter helps you determine if DataTables is rendering for display or sorting etc.
+                                            // You might want to conditionally render differently based on the 'type',
+                                            // but for simplicity, let's assume we want the same behavior for all types.
 
-            $('.filter-btn').on('click', function () {
-                // Initialize 'table' variable if not already initialized
-                if (!table) {
-                    table = $('#articleTable').DataTable();
-                }
+                                            // 'row' parameter provides access to the entire data object for the current row
+                                            // You can access other properties like 'articleUrl' from 'row'
 
-                var filterValue = $(this).data('filter');
-                if (filterValue === "today") {
-                    // Filter by today's date
-                    table.column(2).search('Today').draw();
-                } 
-                else if (filterValue === "week") {
-                    // Filter by articles published within the last 7 days
-                    table.column(1).search('1day ago').draw();
-                } 
-                else if (filterValue === "month") {
-                    // Filter by articles published within the last month
-                    // You need to define the logic for this filter based on your specific requirements
-                }
+                                            // Construct the hyperlink using the articleUrl and articleTitle
+                                            return '<a href="' + row.articleUrl + '" target="_blank">' + data + '</a>';
+                                        }
+                                    },
+                                    {
+                                        data: "articleTime",
+                                        render: function (data, type, row, meta) {
+                                            // Convert the articleTime to a Date object
+                                            var articleDate = new Date(data);
+
+                                            // Get the current date
+                                            var currentDate = new Date();
+
+                                            // Calculate the difference in days
+                                            var differenceInTime = currentDate.getTime() - articleDate.getTime();
+                                            var differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+
+
+                                            // Get the month and date in the desired format
+                                            var month = (articleDate.getMonth() + 1).toString().padStart(2, '0'); // Adding 1 because months are zero-based
+                                            var day = articleDate.getDate().toString().padStart(2, '0');
+
+                                            var formattedDate = month + '/' + day; // Format: MM/DD
+
+                                            return formattedDate;
+
+                                            // Return the appropriate label based on the difference in days
+                                            // if (differenceInDays === 0) {
+                                            //     return "Today";
+                                            // } else if (differenceInDays === 1) {
+                                            //     return "1 day ago";
+                                            // } else {
+                                            //     return differenceInDays + " days ago";
+                                            // }
+                                        }
+                                    }
+                                ],
+                                columnDefs: [{ width: '15%', targets: 0 }, { width: '10%', targets: 2 }]
+                            });
+                            // Enable DataTables filtering
+                            table.columns().every(function () {
+                                var column = this;
+
+                                // Date range filtering
+                                if (column.index() === 2) { // Assuming the third column (index 2) contains the date
+                                    var minDateInput = $('<input type="text" placeholder="Min Date" />')
+                                        .appendTo($(column.footer()).empty())
+                                        .on('change', function () {
+                                            var minDate = minDateInput.val();
+                                            column.search(minDate, true, false).draw();
+                                        });
+
+                                    var maxDateInput = $('<input type="text" placeholder="Max Date" />')
+                                        .appendTo($(column.footer()).empty())
+                                        .on('change', function () {
+                                            var maxDate = maxDateInput.val();
+                                            column.search(maxDate, true, false).draw();
+                                        });
+                                }
+                            });
+                        } else {
+                            console.error("No articles found.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", error);
+                    }
+                });
             });
-
-
         });
     </script>
 }

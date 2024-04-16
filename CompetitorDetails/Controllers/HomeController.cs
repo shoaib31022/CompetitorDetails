@@ -1,14 +1,17 @@
 ﻿using CompetitorDetails.Data;
 using CompetitorDetails.Models;
 using CompetitorDetails.Selenium;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Diagnostics;
 
 namespace CompetitorDetails.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -23,12 +26,17 @@ namespace CompetitorDetails.Controllers
         }
         public IActionResult Index()
         {
+            // Retrieve list of drivers and cars from the database
+            var brands = _context.competitors.ToList();
+
+            // Populate ViewBag with SelectList for DriverId and CarId
+            ViewBag.BrandId = new SelectList(brands, "Id", "Name"); // Assuming Driver has an "Id" and "Name" property
             return View();
         }
-        public async Task<IActionResult> GetArticleData()
+        public async Task<IActionResult> GetArticleData(Competitor competitor)
         {
             List<ArticleViewModel> articleslist = new List<ArticleViewModel>();
-            List<ArticleDetail>? articles = await _context.articles
+            var articles = await _context.articles.Where(id => id.BrandId == competitor.Id)
                 .Include(c => c.Competitors)
                 .ToListAsync();
             if (articles.Count > 0)
@@ -116,7 +124,20 @@ namespace CompetitorDetails.Controllers
             return Json(new { message = "Something Wrong please check try again" });
         }
 
-
+        [HttpPost]
+        public IActionResult SubmitForm(Competitor model)
+        {
+            if (model != null)
+            {
+                // Your logic here to handle the form submission
+                // For example, you could save the data to the database
+                return Json(new { success = true, message = "Form submitted successfully." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Failed to submit form. Model is null." });
+            }
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
